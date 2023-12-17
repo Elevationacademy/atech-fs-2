@@ -1,14 +1,69 @@
 const express = require("express")
 const path = require("path")
+const axios = require("axios")
+
+
 const app = express()
 
 
-app.use("/tweeter",express.static(path.join(__dirname,"twetter")))
+const ELE_PEOPLE_URL = "https://ele-people-api-8eb0b1bd9b96.herokuapp.com/"
+let reqCounter = 0
+app.use(express.static(path.join(__dirname,"dist")))
 app.use("/node_modules",express.static(path.join(__dirname,"node_modules")))
+app.use(express.json())
+app.use(express.urlencoded())
 
-app.get("/",function(request,response){
-  response.send("hello")  
+app.use((reqeust,response,next)=>{
+    reqCounter++
+    console.log("So many requests! number : "+reqCounter)
+    next()
 })
+
+
+const animalsArr = [
+    {type: "cat",name:"mshmsh",age:1},
+    {type: "dog",name:"bob",age:6},
+    {type: "cat",name:"lazy",age:1},
+    {type: "parrot",name:"nula",age:2}
+]
+
+app.get("/people/:index",function(request,response){
+    const indexPerson = request.params.index
+    axios.get(ELE_PEOPLE_URL+"people").then((result)=>{
+        response.send(result.data[indexPerson])
+    })
+})
+
+app.get("/animals",function(request,response){
+    response.send({animalsArr})
+})
+
+//get animal by name
+app.get("/animals/:name",function(request,response){
+    const animalName = request.params.name
+    const foundAnimal = animalsArr.find((animal)=>animal.name == animalName)
+    if(foundAnimal){
+        response.send(foundAnimal)
+    } else {
+        response.send({message: "Not found!"})
+    }
+})
+
+app.post("/animals",function(request,response){
+    const newAnimal = request.body
+    animalsArr.push(newAnimal)
+    response.send(newAnimal)
+})
+
+
+app.delete("/animals/:name",function(request,response){
+    const animalName = request.params.name
+    const indexAnimal = animalsArr.findIndex((animal)=> animal.name === animalName)
+    const deletedAnimal = animalsArr.splice(indexAnimal,1)
+    response.send(deletedAnimal)
+})
+
+
 app.get("/elias/:pet",function(request,response){
     if(request.params.pet == "bob"){
         response.send("woof woof")
@@ -24,8 +79,6 @@ app.get("/elias/:pet",function(request,response){
 app.get("/elias",function(request,response){
     response.send("Hello!")
 })
-
-
 
 app.get("/hassan",function(request,response){
     if(request.query.meal == "burger"){
