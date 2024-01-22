@@ -10,7 +10,6 @@ const animalsArr = [
 ]
 
 
-
 router.get("/",function(request,response){
     response.send({animalsArr})
 })
@@ -56,5 +55,34 @@ router.get("/elias/:pet",function(request,response){
 })
 
 
+router.get("/greeter",function(req,res){
+    let greet = "Hello "
+    // const gender = req.query.gender
+    // if(gender == "female"){
+    //     greet+="Mrs"
+    // } else if (gender == "male") {
+    //     greet +="Mr"
+    // }
+    res.send(greet)
+})
 
+router.get("/greeter/:gender",function(req,res){
+    let greet = "Hello "
+    const gender = req.body
+    if(gender == "female"){
+        greet+="Mrs"
+    } else if (gender == "male") {
+        greet +="Mr"
+    }
+    res.send(greet)
+})
+
+router.get("/person",function(req,res){
+    const name = req.query.name
+})
+
+router.get("/person/:name",function(req,res){
+    const age = req.query.age
+    const name = req.params.name
+})
 module.exports = router
