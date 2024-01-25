@@ -3,12 +3,12 @@ import quizQuestions from './resources/QuizData'
 import './App.css';
 import Question from './components/Question';
 import Result from './components/Result';
+import ExThree from './ex3/ExThree';
 
 function App() {
   return (
     <>
-      <Question question={quizQuestions[0]}/>
-      <Question question={quizQuestions[1]}/>
+  <ExThree/>
     </>
   );
 }
